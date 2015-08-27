@@ -94,7 +94,7 @@ const (
 type MediaPlaylist struct {
 	TargetDuration float64
 	SeqNo          uint64 // EXT-X-MEDIA-SEQUENCE
-	Segments       []*MediaSegment
+	Segments       map[uint]*MediaSegment
 	Args           string // optional arguments placed after URIs (URI?Args)
 	Iframe         bool   // EXT-X-I-FRAMES-ONLY
 	Closed         bool   // is this VOD (closed) or Live (sliding) playlist?

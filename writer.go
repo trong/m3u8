@@ -235,7 +235,7 @@ func NewMediaPlaylist(winsize uint, capacity uint) (*MediaPlaylist, error) {
 	p.ver = minver
 	p.winsize = winsize
 	p.capacity = capacity
-	p.Segments = make([]*MediaSegment, capacity)
+	p.Segments = make(map[uint]*MediaSegment)
 	return p, nil
 }
 

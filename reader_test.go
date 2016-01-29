@@ -2,6 +2,7 @@
  Playlist parsing tests.
 
  Copyleft 2013-2015 Alexander I.Grafov aka Axel <grafov@gmail.com>
+ Copyleft 2013-2015 library authors (see AUTHORS file).
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -93,6 +94,24 @@ func TestDecodeMasterPlaylistWithAlternatives(t *testing.T) {
 	// }
 	// TODO check other values
 	//fmt.Println(p.Encode().String())
+}
+
+// Decode a master playlist with Name tag in EXT-X-STREAM-INF
+func TestDecodeMasterPlaylistWithStreamInfName(t *testing.T) {
+	f, err := os.Open("sample-playlists/master-with-stream-inf-name.m3u8")
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := NewMasterPlaylist()
+	err = p.DecodeFrom(bufio.NewReader(f), false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, variant := range p.Variants {
+		if variant.Name == "" {
+			t.Errorf("Empty name tag on variant URI: %s", variant.URI)
+		}
+	}
 }
 
 func TestDecodeMediaPlaylist(t *testing.T) {

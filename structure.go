@@ -5,6 +5,7 @@ package m3u8
  This file defines data structures related to package.
 
  Copyleft 2013-2015 Alexander I.Grafov aka Axel <grafov@gmail.com>
+ Copyleft 2013-2015 library authors (see AUTHORS file).
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -155,6 +156,7 @@ type VariantParams struct {
 	Video        string
 	Subtitles    string // EXT-X-STREAM-INF only
 	Captions     string // EXT-X-STREAM-INF only
+	Name         string // EXT-X-STREAM-INF only (non standard Wowza/JWPlayer extension to name the variant/quality in UA)
 	Iframe       bool   // EXT-X-I-FRAME-STREAM-INF
 	Alternatives []*Alternative
 }

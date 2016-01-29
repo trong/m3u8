@@ -5,6 +5,7 @@ package m3u8
  This file defines functions related to playlist parsing.
 
  Copyleft 2013-2015 Alexander I.Grafov aka Axel <grafov@gmail.com>
+ Copyleft 2013-2015 library authors (see AUTHORS file).
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -163,6 +164,13 @@ func decode(buf *bytes.Buffer, strict bool) (Playlist, ListType, error) {
 			break
 		}
 
+		// fixes the issues https://github.com/grafov/m3u8/issues/25
+		// TODO: the same should be done in decode functions of both Master- and MediaPlaylists
+		// so some DRYing would be needed.
+		if len(line) < 1 || line == "\r" {
+			continue
+		}
+
 		err = decodeLineOfMasterPlaylist(master, state, line, strict)
 		if strict && err != nil {
 			return master, state.listType, err
@@ -290,6 +298,8 @@ func decodeLineOfMasterPlaylist(p *MasterPlaylist, state *decodingState, line st
 				state.variant.Subtitles = v
 			case "CLOSED-CAPTIONS":
 				state.variant.Captions = v
+			case "NAME":
+				state.variant.Name = v
 			}
 		}
 	case state.tagStreamInf && !strings.HasPrefix(line, "#"):

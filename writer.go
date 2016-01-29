@@ -5,6 +5,7 @@ package m3u8
  This file defines functions related to playlist generation.
 
  Copyleft 2013-2015 Alexander I.Grafov aka Axel <grafov@gmail.com>
+ Copyleft 2013-2015 library authors (see AUTHORS file).
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -28,10 +29,11 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 	"time"
 )
 
-// Set version of the plalist accordingly with section 7
+// Set version of the playlist accordingly with section 7
 func version(ver *uint8, newver uint8) {
 	if *ver < newver {
 		*ver = newver
@@ -204,10 +206,19 @@ func (p *MasterPlaylist) Encode() *bytes.Buffer {
 				p.buf.WriteString(pl.Subtitles)
 				p.buf.WriteRune('"')
 			}
+			if pl.Name != "" {
+				p.buf.WriteString(",NAME=\"")
+				p.buf.WriteString(pl.Name)
+				p.buf.WriteRune('"')
+			}
 			p.buf.WriteRune('\n')
 			p.buf.WriteString(pl.URI)
 			if p.Args != "" {
-				p.buf.WriteRune('?')
+				if strings.Contains(pl.URI, "?") {
+					p.buf.WriteRune('&')
+				} else {
+					p.buf.WriteRune('?')
+				}
 				p.buf.WriteString(p.Args)
 			}
 			p.buf.WriteRune('\n')
@@ -316,6 +327,16 @@ func (p *MediaPlaylist) Encode() *bytes.Buffer {
 		if p.Key.IV != "" {
 			p.buf.WriteString(",IV=")
 			p.buf.WriteString(p.Key.IV)
+		}
+		if p.Key.Keyformat != "" {
+			p.buf.WriteString(",KEYFORMAT=\"")
+			p.buf.WriteString(p.Key.Keyformat)
+			p.buf.WriteRune('"')
+		}
+		if p.Key.Keyformatversions != "" {
+			p.buf.WriteString(",KEYFORMATVERSIONS=\"")
+			p.buf.WriteString(p.Key.Keyformatversions)
+			p.buf.WriteRune('"')
 		}
 		p.buf.WriteRune('\n')
 	}
@@ -442,6 +463,16 @@ func (p *MediaPlaylist) Encode() *bytes.Buffer {
 			if seg.Key.IV != "" {
 				p.buf.WriteString(",IV=")
 				p.buf.WriteString(seg.Key.IV)
+			}
+			if seg.Key.Keyformat != "" {
+				p.buf.WriteString(",KEYFORMAT=\"")
+				p.buf.WriteString(seg.Key.Keyformat)
+				p.buf.WriteRune('"')
+			}
+			if seg.Key.Keyformatversions != "" {
+				p.buf.WriteString(",KEYFORMATVERSIONS=\"")
+				p.buf.WriteString(seg.Key.Keyformatversions)
+				p.buf.WriteRune('"')
 			}
 			p.buf.WriteRune('\n')
 		}
